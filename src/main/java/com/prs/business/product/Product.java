@@ -10,7 +10,6 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-//	private int vendorID;
 	@ManyToOne
 	@JoinColumn(name="vendorID")
 	private Vendor vendor;

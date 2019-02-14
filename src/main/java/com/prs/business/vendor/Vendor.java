@@ -100,15 +100,7 @@ public class Vendor {
 
     public void setPreApproved(boolean preApproved) {
         isPreApproved = preApproved;
-    }    
-
-//	public List<Product> getProducts() {
-//		return products;
-//	}
-//
-//	public void setProducts(List<Product> products) {
-//		this.products = products;
-//	}
+    }
 
 	@Override
 	public String toString() {
