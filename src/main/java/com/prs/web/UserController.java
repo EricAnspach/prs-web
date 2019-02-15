@@ -90,4 +90,9 @@ public class UserController {
 		}
 		return jr;
 	}
+	
+	@GetMapping("/getByUsername")
+	public JsonResponse getUserByUsername(@RequestBody User u) {
+		return JsonResponse.getInstance(userRepo.findByUserName(u.getUserName()));
+	}
 }

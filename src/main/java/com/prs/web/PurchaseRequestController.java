@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prs.business.purchaserequest.PurchaseRequest;
 import com.prs.business.purchaserequest.PurchaseRequestRepository;
+import com.prs.business.user.User;
+import com.prs.business.user.UserRepository;
 
 @RestController
 @RequestMapping("/purchaserequest")
@@ -23,6 +25,9 @@ public class PurchaseRequestController {
 
 	@Autowired
 	private  PurchaseRequestRepository purchaseRequestRepo;
+	
+	@Autowired
+	private UserRepository userRepo;
 	
 	@GetMapping("/")
 	public JsonResponse getAll() {
@@ -75,7 +80,7 @@ public class PurchaseRequestController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public @ResponseBody JsonResponse deletePurchaseRequest(@PathVariable int id) {
+	public JsonResponse deletePurchaseRequest(@PathVariable int id) {
 		JsonResponse jr = null;
 		Optional<PurchaseRequest> p = purchaseRequestRepo.findById(id);
 		try {
@@ -90,5 +95,25 @@ public class PurchaseRequestController {
 		}
 		return jr;
 	}
+	
+//	@GetMapping("/getByUsername/{userName}")
+//	public JsonResponse getPurchaserequestByUsername(@PathVariable String userName) {
+//		User user = userRepo.findByUserName(userName);
+//		
+//		JsonResponse jr = null;		
+//		try {
+//			Optional<PurchaseRequest> p = purchaseRequestRepo.findByUser(user);
+//			if (p.isPresent()) {
+//				jr = JsonResponse.getInstance(p);
+//			} else {
+//				jr = JsonResponse.getInstance(new Exception("No purchase requests found for username = " + userName));
+//			}
+//		} catch (Exception e) {
+//			jr = JsonResponse.getInstance(e);
+//		}		
+//		return jr;			
+//		
+////		return JsonResponse.getInstance(purchaseRequestRepo.findByUser(user));
+//	}
 	
 }
