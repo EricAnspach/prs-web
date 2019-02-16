@@ -30,7 +30,7 @@ public class PurchaseRequest {
 		super();
 	}
 
-	public PurchaseRequest(int id, int userId, String description, String justification, LocalDate dateNeeded,
+	public PurchaseRequest(int id, User user, String description, String justification, LocalDate dateNeeded,
 			String deliveryMode, String status, double total, LocalDateTime submittedDate, String reasonForRejection) {
 		super();
 		this.id = id;

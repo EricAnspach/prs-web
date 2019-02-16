@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prs.business.purchaserequest.PurchaseRequest;
@@ -20,8 +21,9 @@ import com.prs.business.user.User;
 import com.prs.business.user.UserRepository;
 
 @RestController
-@RequestMapping("/purchaserequest")
+@RequestMapping("/purchase-requests")
 public class PurchaseRequestController {
+
 
 	@Autowired
 	private  PurchaseRequestRepository purchaseRequestRepo;
@@ -38,6 +40,17 @@ public class PurchaseRequestController {
 			jr = JsonResponse.getInstance(e);
 		}
 		return jr;		
+	}
+	
+	@GetMapping("")
+	public JsonResponse getPurchaseRequests(@RequestParam int start, int limit) {
+		JsonResponse jsonResponse = null;
+		try {
+			jsonResponse = JsonResponse.getInstance(purchaseRequestRepo.findAll(PageRequest.of(start, limit)));			
+		} catch (Exception e) {
+			jsonResponse = JsonResponse.getInstance(e);
+		}		
+		return jsonResponse;
 	}
 	
 	@GetMapping("/{id}")
@@ -95,6 +108,17 @@ public class PurchaseRequestController {
 		}
 		return jr;
 	}
+	
+//	@PostMapping("/submit-new")
+//	public JsonResponse submitNewPurchaseRequest(@RequestBody PurchaseRequest p) {
+//		
+////		Optional<PurchaseRequest> purReq = purchaseRequestRepo.findByUserNameAndPassword(u.getUserName(), u.getPassword());
+//		p.setStatus();
+//		
+//		JsonResponse jr = null;
+//		jr = JsonResponse.getInstance(savePurchaseRequest(p));	
+//		return jr;
+//	}
 	
 //	@GetMapping("/getByUsername/{userName}")
 //	public JsonResponse getPurchaserequestByUsername(@PathVariable String userName) {

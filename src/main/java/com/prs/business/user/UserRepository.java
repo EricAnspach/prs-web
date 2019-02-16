@@ -1,7 +1,11 @@
 package com.prs.business.user;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User, Integer> {
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
 	User findByUserName(String userName);
+	Optional<User> findByUserNameAndPassword(String username, String password);
 }

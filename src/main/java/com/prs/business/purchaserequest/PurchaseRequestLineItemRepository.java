@@ -1,7 +1,7 @@
 package com.prs.business.purchaserequest;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface PurchaseRequestLineItemRepository extends CrudRepository<PurchaseRequestLineItem, Integer> {
+public interface PurchaseRequestLineItemRepository extends PagingAndSortingRepository<PurchaseRequestLineItem, Integer> {
 
 }

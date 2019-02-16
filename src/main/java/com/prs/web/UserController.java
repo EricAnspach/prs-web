@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +20,7 @@ import com.prs.business.user.User;
 import com.prs.business.user.UserRepository;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 	
 	@Autowired
@@ -35,6 +37,17 @@ public class UserController {
 		return jr;		
 	}
 	
+	@GetMapping("")
+	public JsonResponse getUsers(@RequestParam int start, int limit) {
+		JsonResponse jsonResponse = null;
+		try {
+			jsonResponse = JsonResponse.getInstance(userRepo.findAll(PageRequest.of(start, limit)));			
+		} catch (Exception e) {
+			jsonResponse = JsonResponse.getInstance(e);
+		}		
+		return jsonResponse;
+	}
+	
 	@GetMapping("/{id}")
 	public JsonResponse get(@PathVariable int id) {
 		JsonResponse jr = null;		
@@ -44,6 +57,22 @@ public class UserController {
 				jr = JsonResponse.getInstance(u);
 			} else {
 				jr = JsonResponse.getInstance(new Exception("No user found for id = " + id));
+			}
+		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e);
+		}		
+		return jr;			
+	}
+	
+	@PostMapping("/authenticate")
+	public JsonResponse authenticate(@RequestBody User u) {
+		JsonResponse jr = null;		
+		try {
+			Optional<User> user = userRepo.findByUserNameAndPassword(u.getUserName(), u.getPassword());
+			if (user.isPresent()) {
+				jr = JsonResponse.getInstance(u);
+			} else {
+				jr = JsonResponse.getInstance(new Exception("No user / password combination found"));
 			}
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e);
@@ -95,4 +124,6 @@ public class UserController {
 	public JsonResponse getUserByUsername(@RequestBody User u) {
 		return JsonResponse.getInstance(userRepo.findByUserName(u.getUserName()));
 	}
+	
+	
 }

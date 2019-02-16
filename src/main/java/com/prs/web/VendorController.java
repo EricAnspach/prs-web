@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +20,7 @@ import com.prs.business.vendor.Vendor;
 import com.prs.business.vendor.VendorRepository;
 
 @RestController
-@RequestMapping("/vendor")
+@RequestMapping("/vendors")
 public class VendorController {
 
 	@Autowired
@@ -33,6 +35,18 @@ public class VendorController {
 			jr = JsonResponse.getInstance(e);
 		}
 		return jr;		
+	}
+	
+	@GetMapping("")
+	public JsonResponse getVendors(@RequestParam int start, int limit) {
+		JsonResponse jsonResponse = null;
+		try {
+			jsonResponse = JsonResponse.getInstance(vendorRepo.findAll(PageRequest.of(start, limit)));
+			
+		} catch (Exception e) {
+			jsonResponse = JsonResponse.getInstance(e);
+		}		
+		return jsonResponse;
 	}
 	
 	@GetMapping("/{id}")
