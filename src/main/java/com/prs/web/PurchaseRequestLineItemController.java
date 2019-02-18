@@ -38,13 +38,13 @@ public class PurchaseRequestLineItemController {
 	
 	@GetMapping("")
 	public JsonResponse getPRLIs(@RequestParam int start, int limit) {
-		JsonResponse jsonResponse = null;
+		JsonResponse jr = null;
 		try {
-			jsonResponse = JsonResponse.getInstance(purchaseRequestLineItemRepo.findAll(PageRequest.of(start, limit)));			
+			jr = JsonResponse.getInstance(purchaseRequestLineItemRepo.findAll(PageRequest.of(start, limit)));			
 		} catch (Exception e) {
-			jsonResponse = JsonResponse.getInstance(e);
+			jr = JsonResponse.getInstance(e);
 		}		
-		return jsonResponse;
+		return jr;
 	}
 	
 	@GetMapping("/{id}")
@@ -63,6 +63,20 @@ public class PurchaseRequestLineItemController {
 		return jr;			
 	}
 	
+	// Get PRLIs by Purchase Request ID; for use when a single purchase request is displayed:
+	// By reviewer to approve or reject request
+	// By user to view request. Use to display after adding, updating, or deleting PRLI.
+	@GetMapping("/getPR/{id}")
+	public JsonResponse getPRLIsByPRID(@PathVariable int id) {
+		JsonResponse jr = null;
+		try {
+			jr = JsonResponse.getInstance(purchaseRequestLineItemRepo.findByPurchaseRequestId(id));
+		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e);
+		}
+		return jr;		
+	}
+	
 	@PostMapping("/")
 	public JsonResponse addPurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem p) {
 		JsonResponse jr = null;
@@ -74,6 +88,15 @@ public class PurchaseRequestLineItemController {
 	public JsonResponse updatePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem p, @PathVariable int id) {
 		return savePurchaseRequestLineItem(p);
 	}
+	
+//	@PostMapping("/prlis/")
+//	public JsonResponse addLineItem(@RequestBody PurchaseRequestLineItem p) {
+//		JsonResponse jr = null;
+//		PurchaseRequest pr = p.getPurchaseRequest();
+//		int pRId = pr.getId();
+//		jr = addPurchaseRequestLineItem(p);
+//		return jr;		
+//	}
 
 	private JsonResponse savePurchaseRequestLineItem(PurchaseRequestLineItem p) {
 		JsonResponse jr = null;

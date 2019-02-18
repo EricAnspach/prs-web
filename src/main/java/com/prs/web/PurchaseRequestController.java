@@ -1,6 +1,11 @@
 package com.prs.web;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+
+import javax.swing.JRadioButton;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,11 +27,10 @@ import com.prs.business.user.UserRepository;
 
 @RestController
 @RequestMapping("/purchase-requests")
-public class PurchaseRequestController {
-
+public class PurchaseRequestController {	
 
 	@Autowired
-	private  PurchaseRequestRepository purchaseRequestRepo;
+	private PurchaseRequestRepository purchaseRequestRepo;
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -44,15 +48,16 @@ public class PurchaseRequestController {
 	
 	@GetMapping("")
 	public JsonResponse getPurchaseRequests(@RequestParam int start, int limit) {
-		JsonResponse jsonResponse = null;
+		JsonResponse jr = null;
 		try {
-			jsonResponse = JsonResponse.getInstance(purchaseRequestRepo.findAll(PageRequest.of(start, limit)));			
+			jr = JsonResponse.getInstance(purchaseRequestRepo.findAll(PageRequest.of(start, limit)));			
 		} catch (Exception e) {
-			jsonResponse = JsonResponse.getInstance(e);
+			jr = JsonResponse.getInstance(e);
 		}		
-		return jsonResponse;
+		return jr;
 	}
 	
+	// Gets one Purchase Request. Displays total $ amount. JsonResponse will include only overall PR information, but not each line item.
 	@GetMapping("/{id}")
 	public JsonResponse get(@PathVariable int id) {
 		JsonResponse jr = null;		
@@ -109,35 +114,58 @@ public class PurchaseRequestController {
 		return jr;
 	}
 	
-//	@PostMapping("/submit-new")
-//	public JsonResponse submitNewPurchaseRequest(@RequestBody PurchaseRequest p) {
-//		
-////		Optional<PurchaseRequest> purReq = purchaseRequestRepo.findByUserNameAndPassword(u.getUserName(), u.getPassword());
-//		p.setStatus();
-//		
-//		JsonResponse jr = null;
-//		jr = JsonResponse.getInstance(savePurchaseRequest(p));	
-//		return jr;
-//	}
+	@PostMapping("/submit-new")
+	public JsonResponse submitNewPurchaseRequest(@RequestBody PurchaseRequest p) {				
+		p.setStatus("New");
+		p.setSubmittedDate(LocalDateTime.now());
+		p.setTotal(0.00);
+		p.setReasonForRejection("");
+		
+		JsonResponse jr = null;
+		jr = addPurchaseRequest(p);	
+		return jr;
+	}
 	
-//	@GetMapping("/getByUsername/{userName}")
-//	public JsonResponse getPurchaserequestByUsername(@PathVariable String userName) {
-//		User user = userRepo.findByUserName(userName);
-//		
-//		JsonResponse jr = null;		
-//		try {
-//			Optional<PurchaseRequest> p = purchaseRequestRepo.findByUser(user);
-//			if (p.isPresent()) {
-//				jr = JsonResponse.getInstance(p);
-//			} else {
-//				jr = JsonResponse.getInstance(new Exception("No purchase requests found for username = " + userName));
-//			}
-//		} catch (Exception e) {
-//			jr = JsonResponse.getInstance(e);
-//		}		
-//		return jr;			
-//		
-////		return JsonResponse.getInstance(purchaseRequestRepo.findByUser(user));
-//	}
+	@PutMapping("/submit-review/{id}")
+	public JsonResponse submitReviewPurchaseRequest(@RequestBody PurchaseRequest p,  @PathVariable int id) {				
+		if (p.getTotal() > 50) {
+			p.setStatus("Review");
+		} else {
+			p.setStatus("Approved");
+		}		
+		
+		p.setSubmittedDate(LocalDateTime.now());
+		
+		JsonResponse jr = null;
+		jr = updatePurchaseRequest(p, id);	
+		return jr;
+	}
+	
+	@GetMapping("/list-review")
+	public JsonResponse getReviewList(@RequestBody User u, @RequestParam int start, int limit) {
+		JsonResponse jr = null;
+		jr = getPurchaseRequests(start, limit);
+		// We need to filter out the purchase requests that don't belong to the User u, and that have a review status.
+		// How do we get this info out of a JsonResponse?
+		// Do we need a for loop to retrieve PR objects, and cycle through them to filter for the ones we want?
+		// Then get those in a JsonResponse?
+		
+		return jr;
+	}
+	
+	@GetMapping("/getByUsername/{userName}")
+	public JsonResponse getPurchaserequestByUsername(@PathVariable String userName) {
+		User user = userRepo.findByUserName(userName);
+		
+		JsonResponse jr = null;		
+		try {		
+			jr = JsonResponse.getInstance(purchaseRequestRepo.findByUser(user));			
+		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e);
+		}		
+		return jr;			
+		
+//		return JsonResponse.getInstance(purchaseRequestRepo.findByUser(user));
+	}
 	
 }
