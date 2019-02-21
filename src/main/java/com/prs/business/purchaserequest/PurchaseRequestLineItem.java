@@ -10,17 +10,22 @@ public class PurchaseRequestLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//    private int purchaseRequestId;
     @ManyToOne
     @JoinColumn(name="purchaseRequestId")
     private PurchaseRequest purchaseRequest;
-//    private int productId;
     @ManyToOne
     @JoinColumn(name="productId")
     private Product product;
     private int quantity;
+    
+	public PurchaseRequestLineItem(PurchaseRequest purchaseRequest, Product product, int quantity) {
+		super();
+		this.purchaseRequest = purchaseRequest;
+		this.product = product;
+		this.quantity = quantity;
+	}
 
-    public int getId() {
+	public int getId() {
         return id;
     }
 

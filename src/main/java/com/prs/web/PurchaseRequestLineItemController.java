@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prs.business.purchaserequest.PurchaseRequest;
 import com.prs.business.purchaserequest.PurchaseRequestLineItem;
 import com.prs.business.purchaserequest.PurchaseRequestLineItemRepository;
 
@@ -24,6 +25,8 @@ public class PurchaseRequestLineItemController {
 	
 	@Autowired
 	private  PurchaseRequestLineItemRepository purchaseRequestLineItemRepo;
+	
+	private double total;
 	
 	@GetMapping("/")
 	public JsonResponse getAll() {
@@ -64,8 +67,8 @@ public class PurchaseRequestLineItemController {
 	}
 	
 	// Get PRLIs by Purchase Request ID; for use when a single purchase request is displayed:
-	// By reviewer to approve or reject request
-	// By user to view request. Use to display after adding, updating, or deleting PRLI.
+	// Used by reviewer to approve or reject request
+	// Or used by user to view request. Use to display after adding, updating, or deleting PRLI.
 	@GetMapping("/getPR/{id}")
 	public JsonResponse getPRLIsByPRID(@PathVariable int id) {
 		JsonResponse jr = null;
@@ -89,14 +92,14 @@ public class PurchaseRequestLineItemController {
 		return savePurchaseRequestLineItem(p);
 	}
 	
-//	@PostMapping("/prlis/")
-//	public JsonResponse addLineItem(@RequestBody PurchaseRequestLineItem p) {
-//		JsonResponse jr = null;
-//		PurchaseRequest pr = p.getPurchaseRequest();
-//		int pRId = pr.getId();
-//		jr = addPurchaseRequestLineItem(p);
-//		return jr;		
-//	}
+	@PostMapping("/prlis/")
+	public JsonResponse addLineItem(@RequestBody PurchaseRequestLineItem p) {
+		JsonResponse jr = null;
+		PurchaseRequest pr = p.getPurchaseRequest();
+		int pRId = pr.getId();
+		jr = addPurchaseRequestLineItem(p);
+		return jr;		
+	}
 
 	private JsonResponse savePurchaseRequestLineItem(PurchaseRequestLineItem p) {
 		JsonResponse jr = null;

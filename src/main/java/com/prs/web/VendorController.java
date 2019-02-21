@@ -39,14 +39,14 @@ public class VendorController {
 	
 	@GetMapping("")
 	public JsonResponse getVendors(@RequestParam int start, int limit) {
-		JsonResponse jsonResponse = null;
+		JsonResponse jr = null;
 		try {
-			jsonResponse = JsonResponse.getInstance(vendorRepo.findAll(PageRequest.of(start, limit)));
+			jr = JsonResponse.getInstance(vendorRepo.findAll(PageRequest.of(start, limit)));
 			
 		} catch (Exception e) {
-			jsonResponse = JsonResponse.getInstance(e);
+			jr = JsonResponse.getInstance(e);
 		}		
-		return jsonResponse;
+		return jr;
 	}
 	
 	@GetMapping("/{id}")

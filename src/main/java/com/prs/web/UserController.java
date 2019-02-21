@@ -39,13 +39,13 @@ public class UserController {
 	
 	@GetMapping("")
 	public JsonResponse getUsers(@RequestParam int start, int limit) {
-		JsonResponse jsonResponse = null;
+		JsonResponse jr = null;
 		try {
-			jsonResponse = JsonResponse.getInstance(userRepo.findAll(PageRequest.of(start, limit)));			
+			jr = JsonResponse.getInstance(userRepo.findAll(PageRequest.of(start, limit)));			
 		} catch (Exception e) {
-			jsonResponse = JsonResponse.getInstance(e);
+			jr = JsonResponse.getInstance(e);
 		}		
-		return jsonResponse;
+		return jr;
 	}
 	
 	@GetMapping("/{id}")

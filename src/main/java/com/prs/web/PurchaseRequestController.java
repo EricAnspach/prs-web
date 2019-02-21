@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prs.business.purchaserequest.PurchaseRequest;
@@ -143,6 +144,9 @@ public class PurchaseRequestController {
 	
 	@GetMapping("/list-review")
 	public JsonResponse getReviewList(@RequestBody User u, @RequestParam int start, int limit) {
+		Iterable<PurchaseRequest> pRList = purchaseRequestRepo.findAll();
+		
+		
 		JsonResponse jr = null;
 		jr = getPurchaseRequests(start, limit);
 		// We need to filter out the purchase requests that don't belong to the User u, and that have a review status.
@@ -151,6 +155,25 @@ public class PurchaseRequestController {
 		// Then get those in a JsonResponse?
 		
 		return jr;
+	}
+	
+	@GetMapping("/approve")
+	public JsonResponse approvePurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id) {
+		p.setStatus("Approved");
+		
+		JsonResponse jr = null;
+		jr = updatePurchaseRequest(p, id);	
+		return jr;		
+	}
+	
+	@GetMapping("/reject")
+	public JsonResponse rejectPurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id, String reason) {
+		p.setStatus("Rejected");
+		p.setReasonForRejection(reason);
+		
+		JsonResponse jr = null;
+		jr = updatePurchaseRequest(p, id);	
+		return jr;		
 	}
 	
 	@GetMapping("/getByUsername/{userName}")

@@ -13,7 +13,6 @@ public class PurchaseRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//    private int userId;
     @ManyToOne
     @JoinColumn(name="userId")
     private User user;
@@ -34,7 +33,6 @@ public class PurchaseRequest {
 			String deliveryMode, String status, double total, LocalDateTime submittedDate, String reasonForRejection) {
 		super();
 		this.id = id;
-//		this.userId = userId;
 		this.user = user;
 		this.description = description;
 		this.justification = justification;
