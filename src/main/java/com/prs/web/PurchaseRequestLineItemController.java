@@ -1,6 +1,9 @@
 package com.prs.web;
 
+import java.util.Iterator;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,16 +18,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prs.business.product.Product;
 import com.prs.business.purchaserequest.PurchaseRequest;
 import com.prs.business.purchaserequest.PurchaseRequestLineItem;
 import com.prs.business.purchaserequest.PurchaseRequestLineItemRepository;
 
 @RestController
-@RequestMapping("/prlis")
+@RequestMapping("/purchase-request-line-items")
 public class PurchaseRequestLineItemController {
 	
 	@Autowired
 	private  PurchaseRequestLineItemRepository purchaseRequestLineItemRepo;
+	
+	@Autowired
+	private EntityManager em;
 	
 	private double total;
 	
@@ -92,14 +99,21 @@ public class PurchaseRequestLineItemController {
 		return savePurchaseRequestLineItem(p);
 	}
 	
-	@PostMapping("/prlis/")
-	public JsonResponse addLineItem(@RequestBody PurchaseRequestLineItem p) {
-		JsonResponse jr = null;
-		PurchaseRequest pr = p.getPurchaseRequest();
-		int pRId = pr.getId();
-		jr = addPurchaseRequestLineItem(p);
-		return jr;		
-	}
+//	@PostMapping("/prlis/")
+//	public JsonResponse addLineItem(@RequestBody PurchaseRequestLineItem p) {
+//		JsonResponse jr = null;
+//		PurchaseRequest pr = p.getPurchaseRequest();
+//		Product product = p.getProduct();
+//	
+//		double price = product.getPrice();
+//		int quantity = p.getQuantity();
+//		double itemTotal = price * quantity;
+//		double pRTotal = itemTotal + pr.getTotal();
+//		pr.setTotal(pRTotal);		
+//		
+//		jr = addPurchaseRequestLineItem(p);
+//		return jr;		
+//	}
 
 	private JsonResponse savePurchaseRequestLineItem(PurchaseRequestLineItem p) {
 		JsonResponse jr = null;
@@ -109,7 +123,25 @@ public class PurchaseRequestLineItemController {
 		} catch (DataIntegrityViolationException e) {
 			jr = JsonResponse.getInstance(new Exception(e.getMessage()));
 		}
+		em.clear();
+		recalculateTotal(p);
 		return jr;
+	}
+
+	private void recalculateTotal(PurchaseRequestLineItem p) {
+		PurchaseRequest pr = p.getPurchaseRequest();
+		int pRID = pr.getId();
+		double pRTotal = 0;
+		Iterable<PurchaseRequestLineItem> prlis = purchaseRequestLineItemRepo.findAll();
+		
+		for (PurchaseRequestLineItem prli : prlis) {
+			if (pRID == prli.getId()) {
+				double pRLITotal = prli.getQuantity() * (prli.getProduct().getPrice());
+				pRTotal += pRLITotal;
+			}
+		}
+		
+		pr.setTotal(pRTotal);
 	}
 	
 	@DeleteMapping("/{id}")

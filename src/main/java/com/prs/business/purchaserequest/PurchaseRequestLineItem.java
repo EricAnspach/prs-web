@@ -18,6 +18,10 @@ public class PurchaseRequestLineItem {
     private Product product;
     private int quantity;
     
+	public PurchaseRequestLineItem() {
+		super();
+	}
+
 	public PurchaseRequestLineItem(PurchaseRequest purchaseRequest, Product product, int quantity) {
 		super();
 		this.purchaseRequest = purchaseRequest;
