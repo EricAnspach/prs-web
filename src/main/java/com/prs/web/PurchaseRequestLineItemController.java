@@ -33,6 +33,9 @@ public class PurchaseRequestLineItemController {
 	@Autowired
 	private EntityManager em;
 	
+	@Autowired
+	private PurchaseRequestController prc;
+	
 	private double total;
 	
 	@GetMapping("/")
@@ -135,13 +138,13 @@ public class PurchaseRequestLineItemController {
 		Iterable<PurchaseRequestLineItem> prlis = purchaseRequestLineItemRepo.findAll();
 		
 		for (PurchaseRequestLineItem prli : prlis) {
-			if (pRID == prli.getId()) {
+			if (pRID == prli.getPurchaseRequest().getId()) {
 				double pRLITotal = prli.getQuantity() * (prli.getProduct().getPrice());
 				pRTotal += pRLITotal;
 			}
-		}
-		
+		}		
 		pr.setTotal(pRTotal);
+		prc.updatePurchaseRequest(pr, pRID);
 	}
 	
 	@DeleteMapping("/{id}")
