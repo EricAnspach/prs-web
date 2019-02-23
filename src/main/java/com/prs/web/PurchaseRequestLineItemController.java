@@ -151,6 +151,7 @@ public class PurchaseRequestLineItemController {
 	public JsonResponse deletePurchaseRequestLineItem(@PathVariable int id) {
 		JsonResponse jr = null;
 		Optional<PurchaseRequestLineItem> p = purchaseRequestLineItemRepo.findById(id);
+		PurchaseRequestLineItem prliToDelete = p.get();
 		try {
 			if (p.isPresent()) {
 				purchaseRequestLineItemRepo.deleteById(id);
@@ -161,6 +162,8 @@ public class PurchaseRequestLineItemController {
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e);
 		}
+		em.clear();
+		recalculateTotal(prliToDelete);
 		return jr;
 	}
 	
