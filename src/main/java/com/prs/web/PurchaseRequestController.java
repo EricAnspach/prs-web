@@ -143,21 +143,13 @@ public class PurchaseRequestController {
 	}
 	
 	@GetMapping("/list-review")
-	public JsonResponse getReviewList(@RequestBody User u) {
-		
-		// We need to filter out the purchase requests that don't belong to the User u, and that have a review status.
-		// How do we get this info out of a JsonResponse?
-		// Do we need a for loop to retrieve PR objects, and cycle through them to filter for the ones we want?
-		// Then get those in a JsonResponse?
-		
+	public JsonResponse getReviewList(@RequestBody User u) {		
 		Iterable<PurchaseRequest> pRList = purchaseRequestRepo.findAll();
 		List<PurchaseRequest> pRListToReview = null;
 		
 		for (PurchaseRequest p : pRList) {
-			if (!p.getUser().equals(u)) {
-				if (p.getStatus().equalsIgnoreCase("review")) {
-					pRListToReview.add(p);
-				}
+			if (!(p.getUser().equals(u)) && p.getStatus().equalsIgnoreCase("review")) {				
+					pRListToReview.add(p);				
 			}
 		}		
 		
@@ -166,7 +158,7 @@ public class PurchaseRequestController {
 		return jr;
 	}
 	
-	@GetMapping("/approve")
+	@PostMapping("/approve/{id}")
 	public JsonResponse approvePurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id) {
 		p.setStatus("Approved");
 		
@@ -175,7 +167,7 @@ public class PurchaseRequestController {
 		return jr;		
 	}
 	
-	@GetMapping("/reject")
+	@PostMapping("/reject/{id}")
 	public JsonResponse rejectPurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id, String reason) {
 		p.setStatus("Rejected");
 		p.setReasonForRejection(reason);
@@ -195,9 +187,6 @@ public class PurchaseRequestController {
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e);
 		}		
-		return jr;			
-		
-//		return JsonResponse.getInstance(purchaseRequestRepo.findByUser(user));
-	}
-	
+		return jr;	
+	}	
 }

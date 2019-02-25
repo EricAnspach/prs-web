@@ -1,6 +1,5 @@
 package com.prs.web;
 
-import java.util.Iterator;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prs.business.product.Product;
 import com.prs.business.purchaserequest.PurchaseRequest;
 import com.prs.business.purchaserequest.PurchaseRequestLineItem;
 import com.prs.business.purchaserequest.PurchaseRequestLineItemRepository;
@@ -35,8 +33,6 @@ public class PurchaseRequestLineItemController {
 	
 	@Autowired
 	private PurchaseRequestController prc;
-	
-	private double total;
 	
 	@GetMapping("/")
 	public JsonResponse getAll() {
@@ -101,22 +97,6 @@ public class PurchaseRequestLineItemController {
 	public JsonResponse updatePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem p, @PathVariable int id) {
 		return savePurchaseRequestLineItem(p);
 	}
-	
-//	@PostMapping("/prlis/")
-//	public JsonResponse addLineItem(@RequestBody PurchaseRequestLineItem p) {
-//		JsonResponse jr = null;
-//		PurchaseRequest pr = p.getPurchaseRequest();
-//		Product product = p.getProduct();
-//	
-//		double price = product.getPrice();
-//		int quantity = p.getQuantity();
-//		double itemTotal = price * quantity;
-//		double pRTotal = itemTotal + pr.getTotal();
-//		pr.setTotal(pRTotal);		
-//		
-//		jr = addPurchaseRequestLineItem(p);
-//		return jr;		
-//	}
 
 	private JsonResponse savePurchaseRequestLineItem(PurchaseRequestLineItem p) {
 		JsonResponse jr = null;
@@ -165,6 +145,5 @@ public class PurchaseRequestLineItemController {
 		em.clear();
 		recalculateTotal(prliToDelete);
 		return jr;
-	}
-	
+	}	
 }
