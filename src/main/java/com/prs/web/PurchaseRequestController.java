@@ -2,6 +2,7 @@ package com.prs.web;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,7 +146,7 @@ public class PurchaseRequestController {
 	@GetMapping("/list-review")
 	public JsonResponse getReviewList(@RequestBody User u) {		
 		Iterable<PurchaseRequest> pRList = purchaseRequestRepo.findAll();
-		List<PurchaseRequest> pRListToReview = null;
+		List<PurchaseRequest> pRListToReview = new ArrayList<PurchaseRequest>();
 		
 		for (PurchaseRequest p : pRList) {
 			if (!(p.getUser().equals(u)) && p.getStatus().equalsIgnoreCase("review")) {				
@@ -167,8 +168,8 @@ public class PurchaseRequestController {
 		return jr;		
 	}
 	
-	@PostMapping("/reject/{id}")
-	public JsonResponse rejectPurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id, String reason) {
+	@PostMapping("/reject/{id}/{reason}")
+	public JsonResponse rejectPurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id, @PathVariable String reason) {
 		p.setStatus("Rejected");
 		p.setReasonForRejection(reason);
 		
