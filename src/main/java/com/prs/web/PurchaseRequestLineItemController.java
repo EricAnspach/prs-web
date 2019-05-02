@@ -7,20 +7,13 @@ import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.prs.business.purchaserequest.PurchaseRequest;
 import com.prs.business.purchaserequest.PurchaseRequestLineItem;
 import com.prs.business.purchaserequest.PurchaseRequestLineItemRepository;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/purchase-request-line-items")
 public class PurchaseRequestLineItemController {
@@ -93,8 +86,8 @@ public class PurchaseRequestLineItemController {
 		return jr;
 	}
 	
-	@PutMapping("/{id}")
-	public JsonResponse updatePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem p, @PathVariable int id) {
+	@PutMapping("/")
+	public JsonResponse updatePurchaseRequestLineItem(@RequestBody PurchaseRequestLineItem p) {
 		return savePurchaseRequestLineItem(p);
 	}
 
@@ -124,7 +117,7 @@ public class PurchaseRequestLineItemController {
 			}
 		}		
 		pr.setTotal(pRTotal);
-		prc.updatePurchaseRequest(pr, pRID);
+		prc.updatePurchaseRequest(pr);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -146,4 +139,15 @@ public class PurchaseRequestLineItemController {
 		recalculateTotal(prliToDelete);
 		return jr;
 	}	
+	
+	@GetMapping(path="/lines-for-pr/{id}")
+	public @ResponseBody JsonResponse getAllLineItemsForPR(@PathVariable int id) {
+		JsonResponse jr = null;
+		try {
+			jr = JsonResponse.getInstance(purchaseRequestLineItemRepo.findAllByPurchaseRequestId(id));
+		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e);
+		}
+		return jr;
+	}
 }

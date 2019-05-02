@@ -6,4 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface PurchaseRequestLineItemRepository extends PagingAndSortingRepository<PurchaseRequestLineItem, Integer> {
 	List<PurchaseRequestLineItem> findByPurchaseRequestId(int id);
+	List<PurchaseRequestLineItem> findAllByPurchaseRequestId(int purchaseRequestId);
 }
