@@ -8,4 +8,5 @@ import com.prs.business.user.User;
 
 public interface PurchaseRequestRepository extends PagingAndSortingRepository<PurchaseRequest, Integer> {
 	List<PurchaseRequest> findByUser(User user);
+	List<PurchaseRequest> findAllByUserIdNotAndStatus(int id, String status);
 }

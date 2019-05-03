@@ -135,21 +135,32 @@ public class PurchaseRequestController {
 		return jr;
 	}
 	
-	@GetMapping("/list-review")
-	public JsonResponse getReviewList(@RequestBody User u) {		
-		Iterable<PurchaseRequest> pRList = purchaseRequestRepo.findAll();
-		List<PurchaseRequest> pRListToReview = new ArrayList<PurchaseRequest>();
-		
-		for (PurchaseRequest p : pRList) {
-			if (!(p.getUser().equals(u)) && p.getStatus().equalsIgnoreCase("review")) {				
-					pRListToReview.add(p);				
-			}
-		}		
-		
+	@GetMapping("/list-review/{id}")
+	public JsonResponse getReviewList(@PathVariable int id) {
 		JsonResponse jr = null;
-		jr = JsonResponse.getInstance(pRListToReview);		
-		return jr;
+		try {
+			jr = JsonResponse.getInstance(purchaseRequestRepo.findAllByUserIdNotAndStatus(id, "New"));
+		} catch (Exception e) {
+			jr = JsonResponse.getInstance(e);
+		}
+		return jr;		
 	}
+	
+//	@GetMapping("/list-review")
+//	public JsonResponse getReviewList(@RequestBody User u) {		
+//		Iterable<PurchaseRequest> pRList = purchaseRequestRepo.findAll();
+//		List<PurchaseRequest> pRListToReview = new ArrayList<PurchaseRequest>();
+//		
+//		for (PurchaseRequest p : pRList) {
+//			if (!(p.getUser().equals(u)) && p.getStatus().equalsIgnoreCase("review")) {				
+//					pRListToReview.add(p);				
+//			}
+//		}		
+//		
+//		JsonResponse jr = null;
+//		jr = JsonResponse.getInstance(pRListToReview);		
+//		return jr;
+//	}
 	
 	@PostMapping("/approve/{id}")
 	public JsonResponse approvePurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id) {

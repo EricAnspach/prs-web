@@ -62,7 +62,7 @@ public class UserController {
 		try {
 			Optional<User> user = userRepo.findByUserNameAndPassword(u.getUserName(), u.getPassword());
 			if (user.isPresent()) {
-				jr = JsonResponse.getInstance(u);
+				jr = JsonResponse.getInstance(user);
 			} else {
 				jr = JsonResponse.getInstance(new Exception("No user / password combination found"));
 			}
