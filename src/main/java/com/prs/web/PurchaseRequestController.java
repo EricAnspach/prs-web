@@ -120,8 +120,8 @@ public class PurchaseRequestController {
 		return jr;
 	}
 	
-	@PutMapping("/submit-review/{id}")
-	public JsonResponse submitReviewPurchaseRequest(@RequestBody PurchaseRequest p,  @PathVariable int id) {				
+	@PutMapping("/submit-review")
+	public JsonResponse submitReviewPurchaseRequest(@RequestBody PurchaseRequest p) {				
 		if (p.getTotal() > 50) {
 			p.setStatus("Review");
 		} else {
