@@ -139,7 +139,7 @@ public class PurchaseRequestController {
 	public JsonResponse getReviewList(@PathVariable int id) {
 		JsonResponse jr = null;
 		try {
-			jr = JsonResponse.getInstance(purchaseRequestRepo.findAllByUserIdNotAndStatus(id, "New"));
+			jr = JsonResponse.getInstance(purchaseRequestRepo.findAllByUserIdNotAndStatus(id, "Review"));
 		} catch (Exception e) {
 			jr = JsonResponse.getInstance(e);
 		}
@@ -162,8 +162,8 @@ public class PurchaseRequestController {
 //		return jr;
 //	}
 	
-	@PostMapping("/approve/{id}")
-	public JsonResponse approvePurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id) {
+	@PostMapping("/approve")
+	public JsonResponse approvePurchaseRequest(@RequestBody PurchaseRequest p) {
 		p.setStatus("Approved");
 		
 		JsonResponse jr = null;
@@ -171,10 +171,9 @@ public class PurchaseRequestController {
 		return jr;		
 	}
 	
-	@PostMapping("/reject/{id}/{reason}")
-	public JsonResponse rejectPurchaseRequest(@RequestBody PurchaseRequest p, @PathVariable int id, @PathVariable String reason) {
+	@PostMapping("/reject")
+	public JsonResponse rejectPurchaseRequest(@RequestBody PurchaseRequest p) {
 		p.setStatus("Rejected");
-		p.setReasonForRejection(reason);
 		
 		JsonResponse jr = null;
 		jr = updatePurchaseRequest(p);	
