@@ -18,14 +18,15 @@ public class User {
     private String phoneNumber;
     private String email;
     private boolean isReviewer;
-    private boolean isAdmin;    
+    private boolean isAdmin;
+    private boolean isActive;
 
     public User() {
 		super();
 	}
 
 	public User(String userName, String password, String firstName, String lastName, String phoneNumber,
-			String email, boolean isReviewer, boolean isAdmin) {
+			String email, boolean isReviewer, boolean isAdmin, boolean isActive) {
 		super();
 		
 		this.userName = userName;
@@ -36,6 +37,7 @@ public class User {
 		this.email = email;
 		this.isReviewer = isReviewer;
 		this.isAdmin = isAdmin;
+		this.isActive = isActive;
 	}
 
 	public int getId() {
@@ -109,12 +111,20 @@ public class User {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
+    
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", userName=" + userName + ", password=" + password + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", phoneNumber=" + phoneNumber + ", email=" + email + ", isReviewer="
-				+ isReviewer + ", isAdmin=" + isAdmin + "]";
+				+ isReviewer + ", isAdmin=" + isAdmin +", isActive=" + isActive + "]";
 	}
     
     
